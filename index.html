@@ -71,6 +71,9 @@ window.addEventListener('resize', () => {
   columns = Math.floor(canvas.width / fontSize);
   drops = new Array(columns).fill(1);
 });
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+
 </script>
 </body>
 </html>
