@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Matrix Digital Rain</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: #000;
+    height: 100%;
+  }
+  canvas {
+    display: block;
+  }
+</style>
+</head>
+<body>
+<canvas id="matrix"></canvas>
+<script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Half-width katakana + numbers, similar to the original film's character set
+const katakana = 'アカサタナハマヤラワガザダバパイキシチニヒミリヰギジヂビピウクスツヌフムユルグズブヅプエケセテネヘメレヱゲゼデベペオコソトノホモヨロヲゴゾドボポヴッン';
+const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const nums = '0123456789';
+const characters = (katakana + latin + nums).split('');
+
+const fontSize = 16;
+let columns = Math.floor(canvas.width / fontSize);
+
+// Each column tracks the y-position of its falling "head" character
+let drops = new Array(columns).fill(1);
+
+function draw() {
+  // Semi-transparent black rectangle creates the fading trail effect
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.font = fontSize + 'px monospace';
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = characters[Math.floor(Math.random() * characters.length)];
+    const x = i * fontSize;
+    const y = drops[i] * fontSize;
+
+    // Leading character is brighter white/green, trail is green
+    ctx.fillStyle = Math.random() > 0.98 ? '#ffffff' : '#00ff41';
+    ctx.fillText(text, x, y);
+
+    // Reset drop to top randomly once it's past the bottom of the screen
+    if (y > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+
+setInterval(draw, 33);
+
+window.addEventListener('resize', () => {
+  columns = Math.floor(canvas.width / fontSize);
+  drops = new Array(columns).fill(1);
+});
+</script>
+</body>
+</html>
